@@ -1,3 +1,8 @@
+# Our own ignore
+.idea/
+app/
+FindBTWIFI.iml
+
 # Built application files
 *.apk
 *.ap_
