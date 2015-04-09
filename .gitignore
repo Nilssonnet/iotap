@@ -71,3 +71,8 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Our own ignore
+.idea/
+app/
+FindBTWIFI.iml
