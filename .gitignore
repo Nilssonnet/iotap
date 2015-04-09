@@ -1,6 +1,6 @@
 # Our own ignore
-.idea/*
-app/app.iml
+/.idea/*
+/app/app.iml
 FindBTWIFI.iml
 
 # Built application files
