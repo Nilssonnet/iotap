@@ -19,6 +19,7 @@ public class MainActivity extends ActionBarActivity {
     private ArrayList<String> deviceList = new ArrayList<String>();
     private final static int REQUEST_ENABLE_BT = 1;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +35,12 @@ public class MainActivity extends ActionBarActivity {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
+
+        mBlueAdapter.startDiscovery();
+
+        // Register the BroadcastReceiver
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(mReceiver, filter); // Unregister in onDestroy
     }
 
 
@@ -50,10 +57,13 @@ public class MainActivity extends ActionBarActivity {
             }
         }
     };
-    // Register the BroadcastReceiver
-    IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-    registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
 
+
+    @Override
+    public void onDestroy() {
+        unregisterReceiver(mReceiver);
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
