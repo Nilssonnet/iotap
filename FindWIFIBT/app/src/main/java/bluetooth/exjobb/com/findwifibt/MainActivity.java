@@ -33,12 +33,19 @@ public class MainActivity extends Activity {
     private ArrayList<Devices> arrayListDevices;
     private DeviceAdapter deviceAdapter;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button searchButton = (Button) findViewById(R.id.search_button);
         mBlueAdapter = BluetoothAdapter.getDefaultAdapter();
+        if(mBlueAdapter==null){
+            Toast.makeText(MainActivity.this, "This device do not have Bluetooth",
+                    Toast.LENGTH_SHORT).show();
+
+        }
 
         arrayListDevices = new ArrayList<Devices>();
         deviceAdapter=new DeviceAdapter(this,arrayListDevices);
@@ -48,31 +55,28 @@ public class MainActivity extends Activity {
         //deviceAdapter.add(new Devices("Test1", "Test1.2"));
         //deviceAdapter.add(new Devices("Test2", "Test2.2"));
 
-
-        if(mBlueAdapter==null){
-
+        if (!mBlueAdapter.isEnabled()) { //returns false if BT is not enabled
+            ///Creates dialog for turning on Bluetooth
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
-
-
-
-
 
     }
 
     public void scan(View view){
         Toast.makeText(MainActivity.this, "Starting search for BT devices", Toast.LENGTH_SHORT).show();
         //deviceAdapter.add(new Devices("Test2", "Test2.2"));
-        if (!mBlueAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        }
         mBlueAdapter.startDiscovery();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         // Register the BroadcastReceiver
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(mReceiver, filter); // Unregister in onDestroy
-    }
 
+    }
 
     // Create a BroadcastReceiver for ACTION_FOUND
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
