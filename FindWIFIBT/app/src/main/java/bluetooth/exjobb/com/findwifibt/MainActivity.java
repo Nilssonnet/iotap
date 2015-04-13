@@ -43,35 +43,35 @@ public class MainActivity extends Activity {
 
         ListView listView = (ListView)findViewById(R.id.listViewDevices);
         listView.setAdapter(deviceAdapter);
-        deviceAdapter.add(new Devices("Test1", "Test1.2"));
-        deviceAdapter.add(new Devices("Test2", "Test2.2"));
+        //deviceAdapter.add(new Devices("Test1", "Test1.2"));
+        //deviceAdapter.add(new Devices("Test2", "Test2.2"));
 
 
-/*        if(mBlueAdapter==null){
+        if(mBlueAdapter==null){
 
-        }*/
+        }
 
-/*        // Register the BroadcastReceiver
+        // Register the BroadcastReceiver
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(mReceiver, filter); // Unregister in onDestroy*/
 
-                //search for bluetooth devices
-/*                if (!mBlueAdapter.isEnabled()) {
-                    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-                }
-                mBlueAdapter.startDiscovery();*/
+        mBlueAdapter.startDiscovery();
 
     }
 
     public void scan(View view){
         Toast.makeText(MainActivity.this, "Starting search for BT devices", Toast.LENGTH_SHORT).show();
-        deviceAdapter.add(new Devices("Test2", "Test2.2"));
+        //deviceAdapter.add(new Devices("Test2", "Test2.2"));
+        if (!mBlueAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
+
     }
 
 
     // Create a BroadcastReceiver for ACTION_FOUND
-/*    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             // When discovery finds a device
@@ -84,13 +84,13 @@ public class MainActivity extends Activity {
 
             }
         }
-    };*/
+    };
 
-/*    @Override
+    @Override
     public void onDestroy() {
         unregisterReceiver(mReceiver);
 
-    }*/
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
