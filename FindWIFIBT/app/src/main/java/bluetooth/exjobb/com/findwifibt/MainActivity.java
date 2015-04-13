@@ -25,8 +25,7 @@ public class MainActivity extends Activity {
     private ArrayAdapter<String> deviceArray ;
     private final static int REQUEST_ENABLE_BT = 1;
     private BluetoothAdapter mBlueAdapter;
-    private Button searchButton;
-    private ListView deviceList ;
+    private ListView listView;
 
     private ArrayList<Devices> arrayListDevices;
     private DeviceAdapter deviceAdapter;
@@ -35,13 +34,13 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        searchButton = (Button)findViewById(R.id.search_button);
-        //mBlueAdapter = BluetoothAdapter.getDefaultAdapter();
+        Button searchButton = (Button) findViewById(R.id.search_button);
+        mBlueAdapter = BluetoothAdapter.getDefaultAdapter();
 
         arrayListDevices = new ArrayList<Devices>();
         deviceAdapter=new DeviceAdapter(this,arrayListDevices);
 
-        ListView listView = (ListView)findViewById(R.id.listViewDevices);
+        listView = (ListView)findViewById(R.id.listViewDevices);
         listView.setAdapter(deviceAdapter);
         //deviceAdapter.add(new Devices("Test1", "Test1.2"));
         //deviceAdapter.add(new Devices("Test2", "Test2.2"));
@@ -55,7 +54,7 @@ public class MainActivity extends Activity {
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(mReceiver, filter); // Unregister in onDestroy*/
 
-        mBlueAdapter.startDiscovery();
+
 
     }
 
@@ -66,6 +65,7 @@ public class MainActivity extends Activity {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
+        mBlueAdapter.startDiscovery();
 
     }
 
