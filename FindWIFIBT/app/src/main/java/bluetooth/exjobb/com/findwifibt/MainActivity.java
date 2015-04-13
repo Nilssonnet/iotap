@@ -63,6 +63,12 @@ public class MainActivity extends Activity {
 
     }
 
+    @Override
+    public void onDestroy() {
+        unregisterReceiver(mReceiver);
+
+    }
+
     public void scan(View view){
         Toast.makeText(MainActivity.this, "Starting search for BT devices", Toast.LENGTH_SHORT).show();
         //deviceAdapter.add(new Devices("Test2", "Test2.2"));
@@ -97,11 +103,7 @@ public class MainActivity extends Activity {
 
 
 
-    @Override
-    public void onDestroy() {
-        unregisterReceiver(mReceiver);
 
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
