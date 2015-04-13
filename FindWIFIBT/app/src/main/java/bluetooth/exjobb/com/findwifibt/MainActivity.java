@@ -20,6 +20,9 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+/**
+ * Created by Sebastian olsson on 15-04-12.
+ */
 
 public class MainActivity extends Activity {
     private ArrayAdapter<String> deviceArray ;
@@ -50,9 +53,7 @@ public class MainActivity extends Activity {
 
         }
 
-        // Register the BroadcastReceiver
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        registerReceiver(mReceiver, filter); // Unregister in onDestroy*/
+
 
 
 
@@ -67,6 +68,9 @@ public class MainActivity extends Activity {
         }
         mBlueAdapter.startDiscovery();
 
+        // Register the BroadcastReceiver
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(mReceiver, filter); // Unregister in onDestroy
     }
 
 
@@ -85,6 +89,8 @@ public class MainActivity extends Activity {
             }
         }
     };
+
+
 
     @Override
     public void onDestroy() {

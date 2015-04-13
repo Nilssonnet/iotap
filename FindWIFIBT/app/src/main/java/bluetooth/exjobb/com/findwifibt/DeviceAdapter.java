@@ -10,7 +10,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
- * Created by sebastian olsson on 15-04-12.
+ * Created by Sebastian olsson on 15-04-12.
  */
 public class DeviceAdapter extends ArrayAdapter<Devices> {
     public DeviceAdapter(Context context, ArrayList<Devices>devices) {
