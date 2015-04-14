@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class MainActivity extends Activity {
 
     private ArrayList<Devices> arrayListDevices;
     private DeviceAdapter deviceAdapter;
-    private MessageDigest digester = null;
+
 
 
 
@@ -55,18 +56,12 @@ public class MainActivity extends Activity {
 
         listView = (ListView)findViewById(R.id.listViewDevices);
         listView.setAdapter(deviceAdapter);
-        //deviceAdapter.add(new Devices("Test1", "Test1.2"));
-        //deviceAdapter.add(new Devices("Test2", "Test2.2"));
 
         if (!mBlueAdapter.isEnabled()) { //returns false if BT is not enabled
             ///Creates dialog for turning on Bluetooth
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
-
-
-
-
     }
 
     @Override
@@ -78,7 +73,6 @@ public class MainActivity extends Activity {
 
     public void scan(View view){
         Toast.makeText(MainActivity.this, "Starting search for BT devices", Toast.LENGTH_SHORT).show();
-        //deviceAdapter.add(new Devices("Test2", "Test2.2"));
         deviceAdapter.clear();
         mBlueAdapter.startDiscovery();
     }
@@ -102,38 +96,28 @@ public class MainActivity extends Activity {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 // Add the name and address to an array adapter to show in a ListView
                 //deviceAdapter.add( device.getName() + "\n" + device.getAddress()+"\n"+device.getBluetoothClass()); //needs api 18 device.getType()
-                deviceAdapter.add(new Devices(device.getName(),device.getAddress(), hashMethod(device.getAddress().toString())));
+                deviceAdapter.add(new Devices(device.getName(),device.getAddress(), hashMethod(device.getAddress())));
 
             }
         }
     };
 
-
-
-    public String hashMethod (String MAC){
-
-
+    
+    public String hashMethod (String mac) {
+        MessageDigest md = null;
         try {
-            digester = MessageDigest.getInstance("MD5");
-            digester.update(MAC.getBytes());
-            byte messageDigest[]=digester.digest();
-
-            StringBuffer hexString = new StringBuffer();
-
-
-            for(int i =0; i<messageDigest.length; i++){
-                String hex = Integer.toHexString(0xFF & messageDigest[i]);
-                if(hex.length()==1) hexString.append('0');
-                hexString.append(hex);
-                return hexString.toString();
-            }
+            md = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-
-
-        return "";
+        md.update(mac.getBytes(), 0, mac.length());
+        String md5 = new BigInteger(1, md.digest()).toString(16);
+        while (md5.length() < 32) {
+            md5 = "0" + md5;
+        }
+        return md5;
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

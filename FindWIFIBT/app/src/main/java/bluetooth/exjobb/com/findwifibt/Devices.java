@@ -12,7 +12,6 @@ public class Devices {
         this.macAddress=macAddress;
         this.type=type;
         this.hash=hash;
-
     }
 
 }
