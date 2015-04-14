@@ -102,11 +102,11 @@ public class MainActivity extends Activity {
         }
     };
 
-    
+
     public String hashMethod (String mac) {
         MessageDigest md = null;
         try {
-            md = MessageDigest.getInstance("MD5");
+            md = MessageDigest.getInstance("SHA-1");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
