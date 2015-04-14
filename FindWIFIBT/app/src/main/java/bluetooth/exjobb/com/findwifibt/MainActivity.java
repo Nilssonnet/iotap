@@ -18,6 +18,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 /**
@@ -32,6 +34,7 @@ public class MainActivity extends Activity {
 
     private ArrayList<Devices> arrayListDevices;
     private DeviceAdapter deviceAdapter;
+    private MessageDigest digester = null;
 
 
 
@@ -60,6 +63,9 @@ public class MainActivity extends Activity {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
+
+
+
 
     }
 
@@ -96,7 +102,7 @@ public class MainActivity extends Activity {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 // Add the name and address to an array adapter to show in a ListView
                 //deviceAdapter.add( device.getName() + "\n" + device.getAddress()+"\n"+device.getBluetoothClass()); //needs api 18 device.getType()
-                deviceAdapter.add(new Devices(device.getName(),device.getAddress()));
+                deviceAdapter.add(new Devices(device.getName(),device.getAddress(), hashMethod(device.getAddress().toString())));
 
             }
         }
@@ -104,7 +110,29 @@ public class MainActivity extends Activity {
 
 
 
+    public String hashMethod (String MAC){
 
+
+        try {
+            digester = MessageDigest.getInstance("SHA-1");
+            digester.update(MAC.getBytes());
+            byte messageDigest[]=digester.digest();
+
+            StringBuffer hexString = new StringBuffer();
+
+
+            for(int i =0; i<messageDigest.length; i++){
+                hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+
+                return hexString.toString();
+            }
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+
+        return "";
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

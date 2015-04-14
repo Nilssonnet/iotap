@@ -6,10 +6,13 @@ package bluetooth.exjobb.com.findwifibt;
 public class Devices {
     public String macAddress;
     public String type;
+    public String hash;
 
-    public Devices(String macAddress, String type){
+    public Devices(String macAddress, String type, String hash){
         this.macAddress=macAddress;
         this.type=type;
+        this.hash=hash;
+
     }
 
 }

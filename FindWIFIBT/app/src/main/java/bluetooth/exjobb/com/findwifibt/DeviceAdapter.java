@@ -26,9 +26,11 @@ public class DeviceAdapter extends ArrayAdapter<Devices> {
 
         TextView textViewMAC = (TextView)convertView.findViewById(R.id.tvMAC);
         TextView textViewType = (TextView)convertView.findViewById(R.id.tvType);
+        TextView textViewHash = (TextView)convertView.findViewById(R.id.tvHash);
 
         textViewMAC.setText(devices.macAddress);
         textViewType.setText(devices.type);
+        textViewHash.setText(devices.hash);
 
         return convertView;
     }
