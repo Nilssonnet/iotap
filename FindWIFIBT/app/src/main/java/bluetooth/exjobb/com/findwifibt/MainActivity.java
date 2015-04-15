@@ -44,6 +44,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button searchButton = (Button) findViewById(R.id.search_button);
+        Button sendButton = (Button)findViewById(R.id.sendbutton);
         mBlueAdapter = BluetoothAdapter.getDefaultAdapter();
         if(mBlueAdapter==null){
             Toast.makeText(MainActivity.this, "This device do not have Bluetooth",
@@ -75,6 +76,12 @@ public class MainActivity extends Activity {
         Toast.makeText(MainActivity.this, "Starting search for BT devices", Toast.LENGTH_SHORT).show();
         deviceAdapter.clear();
         mBlueAdapter.startDiscovery();
+    }
+
+
+    public void send(View view){
+        Toast.makeText(MainActivity.this, "Sending data to database", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -116,6 +123,7 @@ public class MainActivity extends Activity {
             md5 = "0" + md5;
         }
         return md5;
+        
     }
 
 
