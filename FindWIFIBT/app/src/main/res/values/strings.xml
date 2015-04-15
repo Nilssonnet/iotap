@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">FindWIFIBT</string>
 
-    <string name="search_button">Search</string>
+    <string name="search_text">Search</string>
+    <string name="send_text">Send</string>
     <string name="action_settings">Settings</string>
 </resources>
