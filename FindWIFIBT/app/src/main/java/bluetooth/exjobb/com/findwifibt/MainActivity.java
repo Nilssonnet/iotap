@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
@@ -56,6 +57,7 @@ public class MainActivity extends Activity {
 
 
     private String resultMD5, resultSHA_1;
+    private String radioButtonResult = "";
 
 
     @Override
@@ -92,9 +94,16 @@ public class MainActivity extends Activity {
     }
 
     public void scan(View view){
-        Toast.makeText(MainActivity.this, "Starting search for BT devices", Toast.LENGTH_SHORT).show();
-        deviceAdapter.clear();
-        mBlueAdapter.startDiscovery();
+        if (radioButtonResult.equals("")){
+            Toast.makeText(MainActivity.this, "Select a hash method", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            Toast.makeText(MainActivity.this, "Starting search for BT devices",
+                    Toast.LENGTH_SHORT).show();
+            deviceAdapter.clear();
+            mBlueAdapter.startDiscovery();
+        }
+
     }
 
 
@@ -156,9 +165,18 @@ public class MainActivity extends Activity {
                 //deviceAdapter.add( device.getName() + "\n" + device.getAddress()+"\n"+device.getBluetoothClass()); //needs api 18 device.getType()
                 resultMD5 = hashMethodMD5(device.getAddress());
                 resultSHA_1 = hashMethodSHA_1(device.getAddress());
-                deviceAdapter.add(new Devices(device.getName(),device.getAddress(), resultSHA_1));
                 new SummaryAsyncTask().execute((Void) null);
-            }
+
+                if (radioButtonResult.equals("MD5")){
+                    deviceAdapter.add(new Devices(device.getName(), device.getAddress(),
+                            resultMD5));
+                }
+                else if (radioButtonResult.equals("SHA_1")){
+                    deviceAdapter.add(new Devices(device.getName(), device.getAddress(),
+                            resultSHA_1));
+                }
+
+                }
         }
     };
 
@@ -193,6 +211,23 @@ public class MainActivity extends Activity {
         }
         return md5;
 
+    }
+
+    public void onRadioButtonClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.radioButtonMD5:
+                if (checked)
+                    radioButtonResult = "MD5";
+                    break;
+            case R.id.radioButtonSHA_1:
+                if (checked)
+                    radioButtonResult = "SHA_1";
+                    break;
+        }
     }
 
 

@@ -34,7 +34,7 @@
         android:layout_below="@+id/searchbutton"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
-
+<!--
     <RadioButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,7 +42,8 @@
         android:id="@+id/radioButtonMD5"
         android:layout_alignParentTop="true"
         android:layout_alignLeft="@+id/radioButtonSHA_1"
-        android:layout_alignStart="@+id/radioButtonSHA_1" />
+        android:layout_alignStart="@+id/radioButtonSHA_1"
+        android:onClick="onRadioButtonClicked"/>
 
     <RadioButton
         android:layout_width="wrap_content"
@@ -51,13 +52,33 @@
         android:id="@+id/radioButtonSHA_1"
         android:layout_below="@+id/radioButtonMD5"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:onClick="onRadioButtonClicked"/>
+-->
+
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_toRightOf="@+id/textView"
+        android:layout_toEndOf="@+id/textView">
+        <RadioButton android:id="@+id/radioButtonMD5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/radioButtonMD5"
+            android:onClick="onRadioButtonClicked"/>
+        <RadioButton android:id="@+id/radioButtonSHA_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/radioButtonSHA_1"
+            android:onClick="onRadioButtonClicked"/>
+    </RadioGroup>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Hashmethod to display"
+        android:text="Hash method to display"
         android:id="@+id/textView"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
