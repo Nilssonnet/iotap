@@ -53,9 +53,9 @@ public class MainActivity extends Activity {
     private ArrayList<Devices> arrayListDevices;
     private DeviceAdapter deviceAdapter;
 
-    private DefaultHttpClient httpClient;
 
-    private String MAC = "asdfasdf";
+
+    private String resultMD5, resultSHA_1;
 
 
     @Override
@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button searchButton = (Button) findViewById(R.id.search_button);
-        Button sendButton = (Button)findViewById(R.id.sendbutton);
+        //Button sendButton = (Button)findViewById(R.id.sendbutton);
         mBlueAdapter = BluetoothAdapter.getDefaultAdapter();
         if(mBlueAdapter==null){
             Toast.makeText(MainActivity.this, "This device do not have Bluetooth",
@@ -100,7 +100,7 @@ public class MainActivity extends Activity {
 
     public void send(View view){
 
-        new SummaryAsyncTask().execute((Void) null);
+        //new SummaryAsyncTask().execute((Void) null);
 
         Toast.makeText(MainActivity.this, "Sending data to database", Toast.LENGTH_SHORT).show();
 
@@ -108,14 +108,15 @@ public class MainActivity extends Activity {
 
     class SummaryAsyncTask extends AsyncTask<Void, Void, Boolean> {
 
-        private void postData(String MAC) {
+        private void postData(String MD5, String SHA_1) {
 
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost("http://213.65.109.112/insert.php");
 
             try {
-                ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-                nameValuePairs.add(new BasicNameValuePair("MAC", MAC));
+                ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+                nameValuePairs.add(new BasicNameValuePair("MD5", MD5));
+                nameValuePairs.add(new BasicNameValuePair("SHA_1", SHA_1));
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                 HttpResponse response = httpclient.execute(httppost);
             }
@@ -127,35 +128,9 @@ public class MainActivity extends Activity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            postData(MAC);
+            postData(resultMD5, resultSHA_1);
             return null;
         }
-    }
-
-    private class DownloadWebPageTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-            String response = "";
-            for (String url : urls) {
-                DefaultHttpClient client = new DefaultHttpClient();
-                HttpGet httpGet = new HttpGet(url);
-                try {
-                    HttpResponse execute = client.execute(httpGet);
-                    InputStream content = execute.getEntity().getContent();
-
-                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                    String s = "";
-                    while ((s = buffer.readLine()) != null) {
-                        response += s;
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            return response;
-        }
-
     }
 
     @Override
@@ -171,23 +146,43 @@ public class MainActivity extends Activity {
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+            resultMD5 = "";
+            resultSHA_1 = "";
             // When discovery finds a device
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 // Add the name and address to an array adapter to show in a ListView
                 //deviceAdapter.add( device.getName() + "\n" + device.getAddress()+"\n"+device.getBluetoothClass()); //needs api 18 device.getType()
-                deviceAdapter.add(new Devices(device.getName(),device.getAddress(), hashMethod(device.getAddress())));
-
+                resultMD5 = hashMethodMD5(device.getAddress());
+                resultSHA_1 = hashMethodSHA_1(device.getAddress());
+                deviceAdapter.add(new Devices(device.getName(),device.getAddress(), resultSHA_1));
+                new SummaryAsyncTask().execute((Void) null);
             }
         }
     };
 
 
-    public String hashMethod (String mac) {
+    public String hashMethodSHA_1 (String mac) {
         MessageDigest md = null;
         try {
             md = MessageDigest.getInstance("SHA-1");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        md.update(mac.getBytes(), 0, mac.length());
+        String sha_1 = new BigInteger(1, md.digest()).toString(16);
+        while (sha_1.length() < 32) {
+            sha_1 = "0" + sha_1;
+        }
+        return sha_1;
+
+    }
+
+    public String hashMethodMD5 (String mac) {
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
@@ -197,7 +192,7 @@ public class MainActivity extends Activity {
             md5 = "0" + md5;
         }
         return md5;
-        
+
     }
 
 
