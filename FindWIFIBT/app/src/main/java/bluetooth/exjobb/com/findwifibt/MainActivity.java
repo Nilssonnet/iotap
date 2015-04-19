@@ -1,6 +1,8 @@
 package bluetooth.exjobb.com.findwifibt;
 
 import android.app.Activity;
+import android.os.AsyncTask;
+import android.util.Log;
 import android.view.MenuItem;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -18,13 +20,28 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 /**
- * Created by Sebastian olsson on 15-04-12.
+ * Created by Sebastian Olsson on 15-04-12.
+ * Modified by Mattias Nilsson
  */
 
 public class MainActivity extends Activity {
@@ -36,7 +53,9 @@ public class MainActivity extends Activity {
     private ArrayList<Devices> arrayListDevices;
     private DeviceAdapter deviceAdapter;
 
+    private DefaultHttpClient httpClient;
 
+    private String MAC = "asdfasdf";
 
 
     @Override
@@ -80,7 +99,62 @@ public class MainActivity extends Activity {
 
 
     public void send(View view){
+
+        new SummaryAsyncTask().execute((Void) null);
+
         Toast.makeText(MainActivity.this, "Sending data to database", Toast.LENGTH_SHORT).show();
+
+    }
+
+    class SummaryAsyncTask extends AsyncTask<Void, Void, Boolean> {
+
+        private void postData(String MAC) {
+
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost("http://213.65.109.112/insert.php");
+
+            try {
+                ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+                nameValuePairs.add(new BasicNameValuePair("MAC", MAC));
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                HttpResponse response = httpclient.execute(httppost);
+            }
+            catch(Exception e)
+            {
+                Log.e("log_tag", "Error:  "+e.toString());
+            }
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            postData(MAC);
+            return null;
+        }
+    }
+
+    private class DownloadWebPageTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            for (String url : urls) {
+                DefaultHttpClient client = new DefaultHttpClient();
+                HttpGet httpGet = new HttpGet(url);
+                try {
+                    HttpResponse execute = client.execute(httpGet);
+                    InputStream content = execute.getEntity().getContent();
+
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            return response;
+        }
 
     }
 
