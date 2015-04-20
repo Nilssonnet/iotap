@@ -169,7 +169,7 @@ public class MainActivity extends Activity {
 
                 if (radioButtonResult.equals("MD5")){
                     deviceAdapter.add(new Devices(device.getName(), device.getAddress(),
-                            resultMD5));
+                            hashMethodSHA_512(device.getAddress())));
                 }
                 else if (radioButtonResult.equals("SHA_1")){
                     deviceAdapter.add(new Devices(device.getName(), device.getAddress(),
@@ -201,6 +201,22 @@ public class MainActivity extends Activity {
         MessageDigest md = null;
         try {
             md = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        md.update(mac.getBytes(), 0, mac.length());
+        String md5 = new BigInteger(1, md.digest()).toString(16);
+        while (md5.length() < 32) {
+            md5 = "0" + md5;
+        }
+        return md5;
+
+    }
+
+    public String hashMethodSHA_512 (String mac) {
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("SHA-512");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
