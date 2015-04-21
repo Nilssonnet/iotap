@@ -56,7 +56,7 @@ public class MainActivity extends Activity {
 
 
 
-    private String resultMD5, resultSHA_1;
+    private String resultMD5, resultSHA_1, resultSHA_512;
     private String radioButtonResult = "";
 
 
@@ -157,6 +157,7 @@ public class MainActivity extends Activity {
             String action = intent.getAction();
             resultMD5 = "";
             resultSHA_1 = "";
+            resultSHA_512 = "";
             // When discovery finds a device
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 // Get the BluetoothDevice object from the Intent
@@ -165,17 +166,21 @@ public class MainActivity extends Activity {
                 //deviceAdapter.add( device.getName() + "\n" + device.getAddress()+"\n"+device.getBluetoothClass()); //needs api 18 device.getType()
                 resultMD5 = hashMethodMD5(device.getAddress());
                 resultSHA_1 = hashMethodSHA_1(device.getAddress());
+                resultSHA_512 = hashMethodSHA_512(device.getAddress());
                 new SummaryAsyncTask().execute((Void) null);
 
                 if (radioButtonResult.equals("MD5")){
                     deviceAdapter.add(new Devices(device.getName(), device.getAddress(),
-                            hashMethodSHA_512(device.getAddress())));
+                            resultMD5));
                 }
                 else if (radioButtonResult.equals("SHA_1")){
                     deviceAdapter.add(new Devices(device.getName(), device.getAddress(),
                             resultSHA_1));
                 }
-
+                else if (radioButtonResult.equals("SHA_512")){
+                    deviceAdapter.add(new Devices(device.getName(), device.getAddress(),
+                            resultSHA_512));
+                }
                 }
         }
     };
@@ -243,6 +248,10 @@ public class MainActivity extends Activity {
                 if (checked)
                     radioButtonResult = "SHA_1";
                     break;
+            case R.id.radioButtonSHA_512:
+                if (checked)
+                    radioButtonResult = "SHA_512";
+                break;
         }
     }
 

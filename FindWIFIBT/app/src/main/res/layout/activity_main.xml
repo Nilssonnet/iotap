@@ -15,46 +15,13 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <!--
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/send_text"
-        android:id="@+id/sendbutton"
-        android:onClick="send"
-        android:layout_above="@+id/listViewDevices"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-        -->
-
-    <ListView
+        <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/listViewDevices"
         android:layout_below="@+id/searchbutton"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
-<!--
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="MD5"
-        android:id="@+id/radioButtonMD5"
-        android:layout_alignParentTop="true"
-        android:layout_alignLeft="@+id/radioButtonSHA_1"
-        android:layout_alignStart="@+id/radioButtonSHA_1"
-        android:onClick="onRadioButtonClicked"/>
-
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SHA-1"
-        android:id="@+id/radioButtonSHA_1"
-        android:layout_below="@+id/radioButtonMD5"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:onClick="onRadioButtonClicked"/>
--->
 
     <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
@@ -72,6 +39,11 @@
             android:layout_height="wrap_content"
             android:text="@string/radioButtonSHA_1"
             android:onClick="onRadioButtonClicked"/>
+        <RadioButton android:id="@+id/radioButtonSHA_512"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/radioButtonSHA_512"
+            android:onClick="onRadioButtonClicked"/>
     </RadioGroup>
 
     <TextView
@@ -81,5 +53,5 @@
         android:text="Hash method to display"
         android:id="@+id/textView"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_toRightOf="@+id/searchbutton" />
 </RelativeLayout>
