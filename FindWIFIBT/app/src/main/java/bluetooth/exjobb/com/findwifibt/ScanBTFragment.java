@@ -49,6 +49,8 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
     private String resultMD5, resultSHA_1, resultSHA_512;
     private String radioButtonResult = "";
 
+    private String url = "http://213.65.109.112/insert.php";
+
     public ScanBTFragment() {
         // Required empty public constructor
     }
@@ -128,10 +130,10 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    class SummaryAsyncTask extends AsyncTask<Void, Void, Boolean> {
+    class PostAsyncTask extends AsyncTask<Void, Void, Boolean> {
         private void postData(String MD5, String SHA_1) {
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("http://213.65.109.112/insert.php");
+            HttpPost httppost = new HttpPost(url);
 
             try {
                 ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
@@ -178,7 +180,7 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
                 resultMD5 = HashMethods.hashMethodMD5(device.getAddress());
                 resultSHA_1 = HashMethods.hashMethodSHA_1(device.getAddress());
                 resultSHA_512 = HashMethods.hashMethodSHA_512(device.getAddress());
-                new SummaryAsyncTask().execute((Void) null);
+                new PostAsyncTask().execute((Void) null);
 
                 if (radioButtonResult.equals("MD5")){
                     deviceAdapter.add(new Devices(device.getName(), device.getAddress(),
