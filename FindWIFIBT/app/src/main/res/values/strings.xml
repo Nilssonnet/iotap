@@ -7,4 +7,7 @@
     <string name="radioButtonMD5">MD5</string>
     <string name="radioButtonSHA_1">SHA-1</string>
     <string name="radioButtonSHA_512">SHA-512</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
