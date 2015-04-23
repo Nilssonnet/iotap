@@ -187,9 +187,9 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 // Add the name and address to an array adapter to show in a ListView
                 //deviceAdapter.add( device.getName() + "\n" + device.getAddress()+"\n"+device.getBluetoothClass()); //needs api 18 device.getType()
-                resultMD5 = hashMethodMD5(device.getAddress());
-                resultSHA_1 = hashMethodSHA_1(device.getAddress());
-                resultSHA_512 = hashMethodSHA_512(device.getAddress());
+                resultMD5 = HashMethods.hashMethodMD5(device.getAddress());
+                resultSHA_1 = HashMethods.hashMethodSHA_1(device.getAddress());
+                resultSHA_512 = HashMethods.hashMethodSHA_512(device.getAddress());
                 new SummaryAsyncTask().execute((Void) null);
 
                 if (radioButtonResult.equals("MD5")){
@@ -207,62 +207,6 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
             }
         }
     };
-
-    public String hashMethodSHA_1 (String mac) {
-        MessageDigest md = null;
-        try {
-            md = MessageDigest.getInstance("SHA-1");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        md.update(mac.getBytes(), 0, mac.length());
-        String sha_1 = new BigInteger(1, md.digest()).toString(16);
-        while (sha_1.length() < 32) {
-            sha_1 = "0" + sha_1;
-        }
-        return sha_1;
-
-    }
-
-    public String hashMethodMD5 (String mac) {
-        MessageDigest md = null;
-        try {
-            md = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        md.update(mac.getBytes(), 0, mac.length());
-        String md5 = new BigInteger(1, md.digest()).toString(16);
-        while (md5.length() < 32) {
-            md5 = "0" + md5;
-        }
-        return md5;
-
-    }
-
-    public String hashMethodSHA_512 (String mac) {
-        MessageDigest md = null;
-        try {
-            md = MessageDigest.getInstance("SHA-512");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        md.update(mac.getBytes(), 0, mac.length());
-        String md5 = new BigInteger(1, md.digest()).toString(16);
-        while (md5.length() < 32) {
-            md5 = "0" + md5;
-        }
-        return md5;
-
-    }
-
-    public void onRadioButtonClicked(View view) {
-        // Is the button now checked?
-        boolean checked = ((RadioButton) view).isChecked();
-
-        // Check which radio button was clicked
-
-    }
 
 
 }
