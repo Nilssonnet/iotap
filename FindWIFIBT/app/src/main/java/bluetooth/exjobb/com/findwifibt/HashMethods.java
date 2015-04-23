@@ -5,7 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * Created by Mattias on 2015-04-23.
+ * Created by Sebastian Olsson on 15-04-12.
  */
 public class HashMethods {
 
@@ -41,7 +41,7 @@ public class HashMethods {
         return sha_1;
 
     }
-    
+
     public static String hashMethodSHA_512 (String mac) {
         MessageDigest md = null;
         try {

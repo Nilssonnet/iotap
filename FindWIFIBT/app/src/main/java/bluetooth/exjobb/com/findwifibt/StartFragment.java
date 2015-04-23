@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass.
+ *
+ * Created by Mattias Nilsson on 15-04-23.
  */
 public class StartFragment extends Fragment implements View.OnClickListener{
     View view;
@@ -45,12 +47,10 @@ public class StartFragment extends Fragment implements View.OnClickListener{
             case R.id.buttonScan:
                 getFragmentManager().beginTransaction().replace(R.id.container_main,
                         ScanBTFragment.newInstance(), "Scan").addToBackStack("Scan").commit();
-                //Toast.makeText(getActivity(), "Scan", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.buttonDisplay:
                 getFragmentManager().beginTransaction().replace(R.id.container_main,
                         DisplayFragment.newInstance(), "Display").addToBackStack("Disp").commit();
-                //Toast.makeText(getActivity(), "Display", Toast.LENGTH_SHORT).show();
                 break;
         }
     }

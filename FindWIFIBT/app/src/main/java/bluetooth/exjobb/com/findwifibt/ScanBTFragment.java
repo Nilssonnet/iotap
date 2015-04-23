@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -29,14 +28,13 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-
 
 /**
  * A simple {@link Fragment} subclass.
+ *
+ * Created by Sebastian Olsson on 15-04-12.
+ * Modified by Mattias Nilsson
  */
 public class ScanBTFragment extends Fragment implements View.OnClickListener{
 
@@ -60,12 +58,9 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
         return fragment;
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        //return inflater.inflate(R.layout.fragment_scan_bt, container, false);
         View view = inflater.inflate(R.layout.fragment_scan_bt, container, false);
 
         arrayListDevices = new ArrayList<Devices>();
@@ -104,28 +99,24 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
                 }
             }
         });
-
         return view;
     }
 
     public void onClick(View view){
         switch (view.getId()) {
             case R.id.buttonSearch:
-                scan(view);
+                scan();
                 break;
         }
-
     }
-
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         getActivity().unregisterReceiver(mReceiver);
-
     }
 
-    public void scan(View view){
+    public void scan(){
         if (radioButtonResult.equals("")){
             Toast.makeText(getActivity(), "Select a hash method", Toast.LENGTH_SHORT).show();
         }
@@ -135,13 +126,10 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
             deviceAdapter.clear();
             mBlueAdapter.startDiscovery();
         }
-
     }
 
     class SummaryAsyncTask extends AsyncTask<Void, Void, Boolean> {
-
         private void postData(String MD5, String SHA_1) {
-
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost("http://213.65.109.112/insert.php");
 
@@ -207,6 +195,4 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
             }
         }
     };
-
-
 }
