@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -27,30 +28,33 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class DisplayFragment extends Fragment {
-    private ArrayList< String> devices;
 
-    //private ProgressDialog pDialog;
-
-    private String url = "http://213.65.109.112/get.php";
+    private String link = "http://213.65.109.112/get.php";
 
     private ListView devicesList;
     private ArrayAdapter<String> adapter;
     private ArrayList<String> devicesArray;
-    //private StringBuffer sb = new StringBuffer("");
-    int i = 0;
 
     public DisplayFragment() {
         // Required empty public constructor
@@ -70,54 +74,42 @@ public class DisplayFragment extends Fragment {
         devicesArray = new ArrayList<String>();
         new GetAsyncTask().execute();
 
+
+
+        try {
+            devicesArray = new GetAsyncTask().execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
         adapter = new ArrayAdapter<String>(
                 getActivity(), android.R.layout.simple_list_item_1, devicesArray);
         devicesList = (ListView) view.findViewById(R.id.listViewDisplay);
 
         devicesList.setAdapter(adapter);
-
-        // Loading products in Background Thread
-
-        Toast.makeText(getActivity(), "result: " + new GetAsyncTask().execute((String) null),
-                Toast.LENGTH_SHORT).show();
         return view;
     }
 
 
-    class GetAsyncTask extends AsyncTask<String, String, String> {
-
-        public String getDevices() {
-            StringBuffer sb = new StringBuffer("");
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpGet request = new HttpGet();
-            try {
-
-                request.setURI(new URI(url));
-                HttpResponse response = httpClient.execute(request);
-                BufferedReader in = new BufferedReader
-                        (new InputStreamReader(response.getEntity().getContent()));
-
-
-                String line = "";
-                i++;
-                while ((line = in.readLine()) != null) {
-                    sb.append(line);
-                    devicesArray.add(in.readLine());
-                    break;
-                }
-                in.close();
-
-            } catch (Exception e) {
-                Log.e("log_tag", "Error:  " + e.toString());
-            }
-            return sb.toString();
-
-        }
+    class GetAsyncTask extends AsyncTask<String, String, ArrayList<String>> {
         @Override
-        protected String doInBackground(String... arg0) {
-            return getDevices();
-            //i++;
-            //return null;
+        protected ArrayList<String> doInBackground(String... arg0) {
+            ArrayList<String> devicesArray = new ArrayList<String>();
+            URL urlObj = null;
+            try {
+                urlObj = new URL(link);
+                URLConnection lu = urlObj.openConnection();
+                BufferedReader rd = new BufferedReader(new InputStreamReader(lu.getInputStream()));
+                String line = "";
+                while ((line = rd.readLine()) != null) {
+                    devicesArray.add(line);
+                    devicesArray.add("\n");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return devicesArray;
         }
     }
 }
