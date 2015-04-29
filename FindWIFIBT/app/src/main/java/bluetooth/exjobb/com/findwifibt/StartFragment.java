@@ -32,12 +32,17 @@ public class StartFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        //return inflater.inflate(R.layout.fragment_start, container, false);
         view = inflater.inflate(R.layout.fragment_start, container, false);
         Button scan = (Button) view.findViewById(R.id.buttonScan);
         scan.setOnClickListener(this);
         Button display = (Button) view.findViewById(R.id.buttonDisplay);
         display.setOnClickListener(this);
+        Button full = (Button) view.findViewById(R.id.buttonFullAnon);
+        full.setOnClickListener(this);
+        Button semi = (Button) view.findViewById(R.id.buttonSemiAnon);
+        semi.setOnClickListener(this);
+        Button no = (Button) view.findViewById(R.id.buttonNoAnon);
+        no.setOnClickListener(this);
         return view;
         }
 
@@ -51,6 +56,18 @@ public class StartFragment extends Fragment implements View.OnClickListener{
             case R.id.buttonDisplay:
                 getFragmentManager().beginTransaction().replace(R.id.container_main,
                         DisplayFragment.newInstance(), "Display").addToBackStack("Disp").commit();
+                break;
+            case R.id.buttonFullAnon:
+                getFragmentManager().beginTransaction().replace(R.id.container_main,
+                        FullAnonFragment.newInstance(), "Full").addToBackStack("").commit();
+                break;
+            case R.id.buttonSemiAnon:
+                getFragmentManager().beginTransaction().replace(R.id.container_main,
+                        SemiAnonFragment.newInstance(), "Semi").addToBackStack("").commit();
+                break;
+            case R.id.buttonNoAnon:
+                getFragmentManager().beginTransaction().replace(R.id.container_main,
+                        NoAnonFragment.newInstance(), "No").addToBackStack("").commit();
                 break;
         }
     }
