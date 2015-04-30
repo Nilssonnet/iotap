@@ -2,6 +2,7 @@ package bluetooth.exjobb.com.findwifibt;
 
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -46,8 +47,7 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
     private ArrayList<Devices> arrayListDevices;
     private DeviceAdapter deviceAdapter;
 
-    private String resultMD5, resultSHA_1, resultSHA_512;
-    private String resultHash;
+    private String resultHash, resultClass;
     private String radioButtonResult = "";
 
     private String link = "http://213.65.109.112/insert.php";
@@ -132,31 +132,15 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
     }
 
     class PostAsyncTask extends AsyncTask<Void, Void, Boolean> {
-        private void postData(String MD5, String SHA_1) {
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost(link);
-
-            try {
-                ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-                nameValuePairs.add(new BasicNameValuePair("MD5", MD5));
-                nameValuePairs.add(new BasicNameValuePair("SHA_1", SHA_1));
-                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-                HttpResponse response = httpclient.execute(httppost);
-            }
-            catch(Exception e)
-            {
-                Log.e("log_tag", "Error:  " + e.toString());
-            }
-        }
-
         @Override
         protected Boolean doInBackground(Void... params) {
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost(link);
             try {
-                ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+                ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
                 nameValuePairs.add(new BasicNameValuePair("selection", radioButtonResult));
                 nameValuePairs.add(new BasicNameValuePair("resultHash", resultHash));
+                nameValuePairs.add(new BasicNameValuePair("resultClass", resultClass));
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                 HttpResponse response = httpclient.execute(httppost);
             }
@@ -181,19 +165,20 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            resultMD5 = "";
-            resultSHA_1 = "";
-            resultSHA_512 = "";
+            resultClass = "";
             resultHash = "";
             // When discovery finds a device
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                BluetoothClass btClass=intent.getParcelableExtra(BluetoothDevice.EXTRA_CLASS);
                 // Add the name and address to an array adapter to show in a ListView
                 //deviceAdapter.add( device.getName() + "\n" + device.getAddress()+"\n"+device.getBluetoothClass()); //needs api 18 device.getType()
                 //resultMD5 = HashMethods.hashMethodMD5(device.getAddress());
                 //resultSHA_1 = HashMethods.hashMethodSHA_1(device.getAddress());
                 //resultSHA_512 = HashMethods.hashMethodSHA_512(device.getAddress());
+                resultClass = BluetoothDevices.DeviceClass(btClass.getDeviceClass());
+
                 new PostAsyncTask().execute((Void) null);
 
                 if (radioButtonResult.equals("FullAnon")){
