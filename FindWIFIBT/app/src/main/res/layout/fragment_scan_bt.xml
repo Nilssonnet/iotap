@@ -16,9 +16,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/listViewDevices"
-        android:layout_below="@+id/buttonSearch"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/radioGroup" />
 
     <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
@@ -27,28 +27,30 @@
         android:id="@+id/radioGroup"
         android:layout_toRightOf="@+id/textView"
         android:layout_toEndOf="@+id/textView">
-        <RadioButton android:id="@+id/radioButtonMD5"
+        <RadioButton android:id="@+id/radioButtonFullAnon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/radioButtonMD5"
+            android:text="@string/radioButtonFullAnon"
             />
-        <RadioButton android:id="@+id/radioButtonSHA_1"
+        <RadioButton android:id="@+id/radioButtonSemiAnon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/radioButtonSHA_1"/>
-        <RadioButton android:id="@+id/radioButtonSHA_512"
+            android:text="@string/radioButtonSemiAnon"/>
+        <RadioButton android:id="@+id/radioButtonNoAnon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/radioButtonSHA_512"/>
+            android:text="@string/radioButtonNoAnon"/>
     </RadioGroup>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Hash method to display"
+        android:textSize="18sp"
+        android:text="Select level\n of Anonymization"
         android:id="@+id/textView"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/buttonSearch" />
+        android:layout_toRightOf="@+id/buttonSearch"
+        android:layout_alignBottom="@+id/buttonSearch" />
 
 </RelativeLayout>

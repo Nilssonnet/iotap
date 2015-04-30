@@ -3,9 +3,11 @@ package bluetooth.exjobb.com.findwifibt;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Calendar;
 
 /**
  * Created by Sebastian Olsson on 15-04-12.
+ * Modified by Mattias Nilsson
  */
 public class HashMethods {
 
@@ -55,6 +57,24 @@ public class HashMethods {
             md5 = "0" + md5;
         }
         return md5;
-
     }
+
+    public static String currentHour(){
+        Calendar rightNow = Calendar.getInstance();
+        return  String.valueOf(rightNow.get(Calendar.YEAR)) +
+                String.valueOf(rightNow.get(Calendar.MONTH)) +
+                String.valueOf(rightNow.get(Calendar.DATE)) +
+                String.valueOf(rightNow.get(Calendar.HOUR_OF_DAY));
+    }
+
+    public static String currentSecond(){
+        Calendar rightNow = Calendar.getInstance();
+        return  String.valueOf(rightNow.get(Calendar.YEAR)) +
+                String.valueOf(rightNow.get(Calendar.MONTH)) +
+                String.valueOf(rightNow.get(Calendar.DATE)) +
+                String.valueOf(rightNow.get(Calendar.HOUR_OF_DAY)) +
+                String.valueOf(rightNow.get(Calendar.MINUTE)) +
+                String.valueOf(rightNow.get(Calendar.SECOND));
+    }
+
 }

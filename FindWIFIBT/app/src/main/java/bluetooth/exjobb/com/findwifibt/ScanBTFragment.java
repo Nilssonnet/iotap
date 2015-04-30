@@ -47,9 +47,10 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
     private DeviceAdapter deviceAdapter;
 
     private String resultMD5, resultSHA_1, resultSHA_512;
+    private String resultHash;
     private String radioButtonResult = "";
 
-    private String url = "http://213.65.109.112/insert.php";
+    private String link = "http://213.65.109.112/insert.php";
 
     public ScanBTFragment() {
         // Required empty public constructor
@@ -89,14 +90,14 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch(checkedId) {
-                    case R.id.radioButtonMD5:
-                            radioButtonResult = "MD5";
+                    case R.id.radioButtonFullAnon:
+                            radioButtonResult = "FullAnon";
                         break;
-                    case R.id.radioButtonSHA_1:
-                            radioButtonResult = "SHA_1";
+                    case R.id.radioButtonSemiAnon:
+                            radioButtonResult = "SemiAnon";
                         break;
-                    case R.id.radioButtonSHA_512:
-                            radioButtonResult = "SHA_512";
+                    case R.id.radioButtonNoAnon:
+                            radioButtonResult = "NoAnon";
                         break;
                 }
             }
@@ -133,7 +134,7 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
     class PostAsyncTask extends AsyncTask<Void, Void, Boolean> {
         private void postData(String MD5, String SHA_1) {
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost(url);
+            HttpPost httppost = new HttpPost(link);
 
             try {
                 ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
@@ -150,7 +151,19 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            postData(resultMD5, resultSHA_1);
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost(link);
+            try {
+                ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+                nameValuePairs.add(new BasicNameValuePair("selection", radioButtonResult));
+                nameValuePairs.add(new BasicNameValuePair("resultHash", resultHash));
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                HttpResponse response = httpclient.execute(httppost);
+            }
+            catch(Exception e)
+            {
+                Log.e("log_tag", "Error:  " + e.toString());
+            }
             return null;
         }
     }
@@ -171,28 +184,32 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
             resultMD5 = "";
             resultSHA_1 = "";
             resultSHA_512 = "";
+            resultHash = "";
             // When discovery finds a device
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 // Add the name and address to an array adapter to show in a ListView
                 //deviceAdapter.add( device.getName() + "\n" + device.getAddress()+"\n"+device.getBluetoothClass()); //needs api 18 device.getType()
-                resultMD5 = HashMethods.hashMethodMD5(device.getAddress());
-                resultSHA_1 = HashMethods.hashMethodSHA_1(device.getAddress());
-                resultSHA_512 = HashMethods.hashMethodSHA_512(device.getAddress());
+                //resultMD5 = HashMethods.hashMethodMD5(device.getAddress());
+                //resultSHA_1 = HashMethods.hashMethodSHA_1(device.getAddress());
+                //resultSHA_512 = HashMethods.hashMethodSHA_512(device.getAddress());
                 new PostAsyncTask().execute((Void) null);
 
-                if (radioButtonResult.equals("MD5")){
+                if (radioButtonResult.equals("FullAnon")){
+                    resultHash = HashMethods.hashMethodSHA_1(HashMethods.currentSecond() + device.getAddress());
                     deviceAdapter.add(new Devices(device.getName(), device.getAddress(),
-                            resultMD5));
+                            resultHash));
                 }
-                else if (radioButtonResult.equals("SHA_1")){
+                else if (radioButtonResult.equals("SemiAnon")){
+                    resultHash = HashMethods.hashMethodSHA_1(HashMethods.currentHour() + device.getAddress());
                     deviceAdapter.add(new Devices(device.getName(), device.getAddress(),
-                            resultSHA_1));
+                            resultHash));
                 }
-                else if (radioButtonResult.equals("SHA_512")){
+                else if (radioButtonResult.equals("NoAnon")){
+                    resultHash = HashMethods.hashMethodSHA_1(device.getAddress());
                     deviceAdapter.add(new Devices(device.getName(), device.getAddress(),
-                            resultSHA_512));
+                            resultHash));
                 }
             }
         }
