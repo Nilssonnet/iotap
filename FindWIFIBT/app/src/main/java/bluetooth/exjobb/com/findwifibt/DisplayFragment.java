@@ -2,12 +2,14 @@ package bluetooth.exjobb.com.findwifibt;
 
 
 
+import android.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RadioGroup;
@@ -28,6 +30,10 @@ public class DisplayFragment extends Fragment implements View.OnClickListener{
 
     private String link;
     private String radioButtonResult = "";
+
+    private ArrayList<String> time;
+    private ArrayList<String> hash;
+    private ArrayList<String> device;
 
     private ArrayList<Display> arrayListDisplay;
     private DisplayAdapter displayAdapter;
@@ -54,6 +60,10 @@ public class DisplayFragment extends Fragment implements View.OnClickListener{
         devicesList = (ListView) view.findViewById(R.id.listViewDisplay);
         devicesList.setAdapter(displayAdapter);
 
+        time = new ArrayList<String>();
+        hash = new ArrayList<String>();
+        device = new ArrayList<String>();
+
         Button displayButton = (Button) view.findViewById(R.id.buttonDisplay);
         displayButton.setOnClickListener(this);
 
@@ -77,6 +87,29 @@ public class DisplayFragment extends Fragment implements View.OnClickListener{
                 }
             }
         });
+
+        devicesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Display display = displayAdapter.getItem(position);
+                //getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+                //Toast.makeText(getActivity(), "test " + getTimeFromPosition(position),
+                //        Toast.LENGTH_SHORT).show();
+                //getTimeFromPosition(position);
+                AnalyzeFragment fragment = AnalyzeFragment.newInstance
+                        (hash.get(position), device.get(position), getTimeFromPosition(position));
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.container_main, fragment);
+                transaction.addToBackStack("Analyze");
+                transaction.commit();
+
+                /*chatFragment = ChatFragment.newInstance(group);
+                transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.container_chat, chatFragment);
+                transaction.addToBackStack("Chat");
+                transaction.commit();*/
+            }
+        });
         return view;
     }
 
@@ -96,22 +129,26 @@ public class DisplayFragment extends Fragment implements View.OnClickListener{
             ArrayList<String> result;
             displayAdapter.clear();
             int j = 0;
+            time.clear();
+            hash.clear();
+            device.clear();
 
             try {
                 result = new GetAsyncTask().execute().get();
-                String time[] = new String[result.size()];
-                String hash[] = new String[result.size()];
-                String device[] = new String[result.size()];
+
+                time = new ArrayList<String>(result.size());
+                hash = new ArrayList<String>(result.size());
+                device = new ArrayList<String>(result.size());
                 if(!result.contains("0 results")) {
                     for (int i = 0; i < result.size(); i++) {
                         String[] parts = result.get(i).split(";");
-                        time[i] = parts[0];
-                        hash[i] = parts[1];
-                        device[i] = parts[2];
+                        time.add(parts[0]);
+                        hash.add(parts[1]);
+                        device.add(parts[2]);
                         j++;
                     }
                     for (int i = 0; i < j; i++) {
-                        displayAdapter.add(new Display(time[i], hash[i], device[i]));
+                        displayAdapter.add(new Display(time.get(i), hash.get(i), device.get(i)));
                     }
                 }
             } catch (InterruptedException e) {
@@ -120,6 +157,17 @@ public class DisplayFragment extends Fragment implements View.OnClickListener{
                 e.printStackTrace();
             }
         }
+    }
+
+    private ArrayList<String> getTimeFromPosition(int pos){
+        String hashdev = hash.get(pos);
+        ArrayList<String> res = new ArrayList<String>();
+        for (int i = 0; i < hash.size(); i++){
+            if(hashdev.equals(hash.get(i))){
+                res.add(time.get(i));
+            }
+        }
+        return res;
     }
 
     class GetAsyncTask extends AsyncTask<String, String, ArrayList<String>> {
