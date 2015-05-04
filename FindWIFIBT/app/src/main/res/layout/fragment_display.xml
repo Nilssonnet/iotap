@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:text="Select level\n of Anonymization"
         android:id="@+id/textView2"
         android:layout_alignParentTop="true"
