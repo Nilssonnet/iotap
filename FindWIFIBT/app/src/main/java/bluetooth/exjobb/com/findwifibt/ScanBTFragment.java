@@ -39,7 +39,6 @@ import java.util.ArrayList;
  */
 public class ScanBTFragment extends Fragment implements View.OnClickListener{
 
-    private ArrayAdapter<String> deviceArray ;
     private final static int REQUEST_ENABLE_BT = 1;
     private BluetoothAdapter mBlueAdapter;
     private ListView listView;
@@ -47,8 +46,7 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
     private ArrayList<Devices> arrayListDevices;
     private DeviceAdapter deviceAdapter;
 
-    private String resultHash, resultClass;
-    private String radioButtonResult = "";
+    private String resultHashFull, resultHashSemi, resultHashNo, resultClass;
 
     private String link = "http://213.65.109.112/insert.php";
 
@@ -76,7 +74,6 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
         if(mBlueAdapter==null){
             Toast.makeText(getActivity(), "This device do not have Bluetooth",
                     Toast.LENGTH_SHORT).show();
-
         }
         if (!mBlueAdapter.isEnabled()) { //returns false if BT is not enabled
             ///Creates dialog for turning on Bluetooth
@@ -85,23 +82,6 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
         }
         Button searchButton = (Button) view.findViewById(R.id.buttonSearch);
         searchButton.setOnClickListener(this);
-        RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch(checkedId) {
-                    case R.id.radioButtonFullAnon:
-                            radioButtonResult = "FullAnon";
-                        break;
-                    case R.id.radioButtonSemiAnon:
-                            radioButtonResult = "SemiAnon";
-                        break;
-                    case R.id.radioButtonNoAnon:
-                            radioButtonResult = "NoAnon";
-                        break;
-                }
-            }
-        });
         return view;
     }
 
@@ -120,15 +100,10 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
     }
 
     public void scan(){
-        if (radioButtonResult.equals("")){
-            Toast.makeText(getActivity(), "Select a hash method", Toast.LENGTH_SHORT).show();
-        }
-        else{
-            Toast.makeText(getActivity(), "Starting search for BT devices",
-                    Toast.LENGTH_SHORT).show();
-            deviceAdapter.clear();
-            mBlueAdapter.startDiscovery();
-        }
+        Toast.makeText(getActivity(), "Starting search for BT devices",
+                Toast.LENGTH_SHORT).show();
+        deviceAdapter.clear();
+        mBlueAdapter.startDiscovery();
     }
 
     class PostAsyncTask extends AsyncTask<Void, Void, Boolean> {
@@ -137,12 +112,26 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost(link);
             try {
-                ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
-                nameValuePairs.add(new BasicNameValuePair("selection", radioButtonResult));
-                nameValuePairs.add(new BasicNameValuePair("resultHash", resultHash));
-                nameValuePairs.add(new BasicNameValuePair("resultClass", resultClass));
-                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                ArrayList<NameValuePair> nameValuePairsFull = new ArrayList<NameValuePair>(3);
+                nameValuePairsFull.add(new BasicNameValuePair("selection", "FullAnon"));
+                nameValuePairsFull.add(new BasicNameValuePair("resultHash", resultHashFull));
+                nameValuePairsFull.add(new BasicNameValuePair("resultClass", resultClass));
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairsFull));
+                HttpResponse responseFull = httpclient.execute(httppost);
+
+                ArrayList<NameValuePair> nameValuePairsSemi = new ArrayList<NameValuePair>(3);
+                nameValuePairsSemi.add(new BasicNameValuePair("selection", "SemiAnon"));
+                nameValuePairsSemi.add(new BasicNameValuePair("resultHash", resultHashSemi));
+                nameValuePairsSemi.add(new BasicNameValuePair("resultClass", resultClass));
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairsSemi));
                 HttpResponse response = httpclient.execute(httppost);
+
+                ArrayList<NameValuePair> nameValuePairsNo = new ArrayList<NameValuePair>(3);
+                nameValuePairsNo.add(new BasicNameValuePair("selection", "NoAnon"));
+                nameValuePairsNo.add(new BasicNameValuePair("resultHash", resultHashNo));
+                nameValuePairsNo.add(new BasicNameValuePair("resultClass", resultClass));
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairsNo));
+                HttpResponse responseNo = httpclient.execute(httppost);
             }
             catch(Exception e)
             {
@@ -158,7 +147,6 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
         // Register the BroadcastReceiver
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         getActivity().registerReceiver(mReceiver, filter); // Unregister in onDestroy
-
     }
 
     // Create a BroadcastReceiver for ACTION_FOUND
@@ -166,36 +154,26 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             resultClass = "";
-            resultHash = "";
+            resultHashFull = "";
+            resultHashSemi = "";
+            resultHashNo = "";
             // When discovery finds a device
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 BluetoothClass btClass=intent.getParcelableExtra(BluetoothDevice.EXTRA_CLASS);
                 // Add the name and address to an array adapter to show in a ListView
-                //deviceAdapter.add( device.getName() + "\n" + device.getAddress()+"\n"+device.getBluetoothClass()); //needs api 18 device.getType()
-                //resultMD5 = HashMethods.hashMethodMD5(device.getAddress());
-                //resultSHA_1 = HashMethods.hashMethodSHA_1(device.getAddress());
-                //resultSHA_512 = HashMethods.hashMethodSHA_512(device.getAddress());
                 resultClass = BluetoothDevices.DeviceClass(btClass.getDeviceClass());
-
+                resultHashFull = HashMethods.hashMethodSHA_1
+                        (HashMethods.currentSecond() + device.getAddress());
+                resultHashSemi = HashMethods.hashMethodSHA_1
+                        (HashMethods.currentHour() + device.getAddress());
+                resultHashNo = HashMethods.hashMethodSHA_1
+                        (device.getAddress());
                 new PostAsyncTask().execute((Void) null);
 
-                if (radioButtonResult.equals("FullAnon")){
-                    resultHash = HashMethods.hashMethodSHA_1(HashMethods.currentSecond() + device.getAddress());
-                    deviceAdapter.add(new Devices(device.getName(), device.getAddress(),
-                            resultHash));
-                }
-                else if (radioButtonResult.equals("SemiAnon")){
-                    resultHash = HashMethods.hashMethodSHA_1(HashMethods.currentHour() + device.getAddress());
-                    deviceAdapter.add(new Devices(device.getName(), device.getAddress(),
-                            resultHash));
-                }
-                else if (radioButtonResult.equals("NoAnon")){
-                    resultHash = HashMethods.hashMethodSHA_1(device.getAddress());
-                    deviceAdapter.add(new Devices(device.getName(), device.getAddress(),
-                            resultHash));
-                }
+                deviceAdapter.add(new Devices(device.getName(), device.getAddress(),
+                        resultHashFull, resultHashSemi, resultHashNo));
             }
         }
     };

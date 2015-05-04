@@ -22,15 +22,13 @@ public class AnalyzeFragment extends Fragment {
     private String hash;
     private String device;
     private ArrayList<String> time;
+
     public AnalyzeFragment() {
         // Required empty public constructor
     }
 
     public static AnalyzeFragment newInstance(String hash, String device, ArrayList<String> time){
-    //public static AnalyzeFragment newInstance(String hash, String device, ArrayList<String> time){
         AnalyzeFragment fragment = new AnalyzeFragment();
-        //Toast.makeText(getActivity(), "test " + time,
-        //        Toast.LENGTH_SHORT).show();
         Bundle args = new Bundle();
         args.putString("Hash", hash);
         args.putString("Device", device);
@@ -47,28 +45,20 @@ public class AnalyzeFragment extends Fragment {
             device = getArguments().getString("Device");
             time = getArguments().getStringArrayList("Time");
         }
-
-
-        //Toast.makeText(getActivity(), "test " + time,
-        //        Toast.LENGTH_SHORT).show();
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        //return inflater.inflate(R.layout.fragment_analyze, container, false);
         View view = inflater.inflate(R.layout.fragment_analyze, container, false);
         TextView textView = (TextView) view.findViewById(R.id.textViewAnalyze);
-        textView.setText("The device with the hashed MAC-address " + hash + " that is a Bluetooth" +
-                " device of class " + device + " has been at this location at these times:");
+        textView.setText("The device with the hashed MAC-address " + hash.substring(6) + " that is a Bluetooth" +
+                " device of class " + device.substring(7) + " has been at this location at these times:");
         ListView listView = (ListView) view.findViewById(R.id.listViewAnalyze);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>
                 (getActivity(), android.R.layout.simple_list_item_1, time);
         listView.setAdapter(arrayAdapter);
         return view;
     }
-
-
 }

@@ -15,9 +15,21 @@
         android:text="Type" />
 
     <TextView
-        android:id="@+id/tvHash"
+        android:id="@+id/tvHashFull"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hash" />
+        android:text="HashFull" />
+
+    <TextView
+        android:id="@+id/tvHashSemi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="HashSemi" />
+
+    <TextView
+        android:id="@+id/tvHashNo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="HashNo" />
 
 </LinearLayout>

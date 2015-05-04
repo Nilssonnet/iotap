@@ -1,7 +1,5 @@
 package bluetooth.exjobb.com.findwifibt;
 
-
-
 import android.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -91,23 +89,12 @@ public class DisplayFragment extends Fragment implements View.OnClickListener{
         devicesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Display display = displayAdapter.getItem(position);
-                //getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-                //Toast.makeText(getActivity(), "test " + getTimeFromPosition(position),
-                //        Toast.LENGTH_SHORT).show();
-                //getTimeFromPosition(position);
                 AnalyzeFragment fragment = AnalyzeFragment.newInstance
                         (hash.get(position), device.get(position), getTimeFromPosition(position));
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.container_main, fragment);
                 transaction.addToBackStack("Analyze");
                 transaction.commit();
-
-                /*chatFragment = ChatFragment.newInstance(group);
-                transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.container_chat, chatFragment);
-                transaction.addToBackStack("Chat");
-                transaction.commit();*/
             }
         });
         return view;

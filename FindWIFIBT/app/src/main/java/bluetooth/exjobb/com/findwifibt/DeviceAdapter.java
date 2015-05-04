@@ -26,11 +26,15 @@ public class DeviceAdapter extends ArrayAdapter<Devices> {
 
         TextView textViewMAC = (TextView)convertView.findViewById(R.id.tvMAC);
         TextView textViewType = (TextView)convertView.findViewById(R.id.tvType);
-        TextView textViewHash = (TextView)convertView.findViewById(R.id.tvHash);
+        TextView textViewHashFull = (TextView)convertView.findViewById(R.id.tvHashFull);
+        TextView textViewHashSemi = (TextView)convertView.findViewById(R.id.tvHashSemi);
+        TextView textViewHashNo = (TextView)convertView.findViewById(R.id.tvHashNo);
 
         textViewMAC.setText(devices.macAddress);
         textViewType.setText(devices.type);
-        textViewHash.setText(devices.hash);
+        textViewHashFull.setText("Full anonymization: " + devices.hashFull);
+        textViewHashSemi.setText("Semi anonymization: " + devices.hashSemi);
+        textViewHashNo.setText("Only SHA-1: " + devices.hashNo);
 
         return convertView;
     }
