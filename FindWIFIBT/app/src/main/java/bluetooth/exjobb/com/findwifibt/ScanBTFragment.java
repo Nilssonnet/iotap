@@ -47,6 +47,7 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
     private DeviceAdapter deviceAdapter;
 
     private String resultHashFull, resultHashSemi, resultHashNo, resultClass;
+    int RSSI;
 
     private String link = "http://213.65.109.112/insert.php";
 
@@ -112,24 +113,27 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost(link);
             try {
-                ArrayList<NameValuePair> nameValuePairsFull = new ArrayList<NameValuePair>(3);
+                ArrayList<NameValuePair> nameValuePairsFull = new ArrayList<NameValuePair>(4);
                 nameValuePairsFull.add(new BasicNameValuePair("selection", "FullAnon"));
                 nameValuePairsFull.add(new BasicNameValuePair("resultHash", resultHashFull));
                 nameValuePairsFull.add(new BasicNameValuePair("resultClass", resultClass));
+                nameValuePairsFull.add(new BasicNameValuePair("RSSI", String.valueOf(RSSI)));
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairsFull));
                 HttpResponse responseFull = httpclient.execute(httppost);
 
-                ArrayList<NameValuePair> nameValuePairsSemi = new ArrayList<NameValuePair>(3);
+                ArrayList<NameValuePair> nameValuePairsSemi = new ArrayList<NameValuePair>(4);
                 nameValuePairsSemi.add(new BasicNameValuePair("selection", "SemiAnon"));
                 nameValuePairsSemi.add(new BasicNameValuePair("resultHash", resultHashSemi));
                 nameValuePairsSemi.add(new BasicNameValuePair("resultClass", resultClass));
+                nameValuePairsSemi.add(new BasicNameValuePair("RSSI", String.valueOf(RSSI)));
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairsSemi));
                 HttpResponse response = httpclient.execute(httppost);
 
-                ArrayList<NameValuePair> nameValuePairsNo = new ArrayList<NameValuePair>(3);
+                ArrayList<NameValuePair> nameValuePairsNo = new ArrayList<NameValuePair>(4);
                 nameValuePairsNo.add(new BasicNameValuePair("selection", "NoAnon"));
                 nameValuePairsNo.add(new BasicNameValuePair("resultHash", resultHashNo));
                 nameValuePairsNo.add(new BasicNameValuePair("resultClass", resultClass));
+                nameValuePairsNo.add(new BasicNameValuePair("RSSI", String.valueOf(RSSI)));
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairsNo));
                 HttpResponse responseNo = httpclient.execute(httppost);
             }
@@ -153,10 +157,6 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            resultClass = "";
-            resultHashFull = "";
-            resultHashSemi = "";
-            resultHashNo = "";
             // When discovery finds a device
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 // Get the BluetoothDevice object from the Intent
@@ -164,16 +164,16 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
                 BluetoothClass btClass=intent.getParcelableExtra(BluetoothDevice.EXTRA_CLASS);
                 // Add the name and address to an array adapter to show in a ListView
                 resultClass = BluetoothDevices.DeviceClass(btClass.getDeviceClass());
+                RSSI = intent.getShortExtra(device.EXTRA_RSSI, Short.MIN_VALUE);
                 resultHashFull = HashMethods.hashMethodSHA_1
-                        (HashMethods.currentSecond() + device.getAddress());
+                        (HashMethods.currentMinute() + device.getAddress());
                 resultHashSemi = HashMethods.hashMethodSHA_1
                         (HashMethods.currentHour() + device.getAddress());
                 resultHashNo = HashMethods.hashMethodSHA_1
                         (device.getAddress());
                 new PostAsyncTask().execute((Void) null);
-
                 deviceAdapter.add(new Devices(device.getName(), device.getAddress(),
-                        resultHashFull, resultHashSemi, resultHashNo));
+                        resultHashFull, resultHashSemi, resultHashNo, RSSI, resultClass));
             }
         }
     };

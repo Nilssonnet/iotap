@@ -25,16 +25,22 @@ public class DeviceAdapter extends ArrayAdapter<Devices> {
         }
 
         TextView textViewMAC = (TextView)convertView.findViewById(R.id.tvMAC);
+        TextView textRSSI = (TextView)convertView.findViewById(R.id.tvRSSI);
+        TextView textClass = (TextView)convertView.findViewById(R.id.tvClass);
         TextView textViewType = (TextView)convertView.findViewById(R.id.tvType);
         TextView textViewHashFull = (TextView)convertView.findViewById(R.id.tvHashFull);
         TextView textViewHashSemi = (TextView)convertView.findViewById(R.id.tvHashSemi);
         TextView textViewHashNo = (TextView)convertView.findViewById(R.id.tvHashNo);
 
-        textViewMAC.setText(devices.macAddress);
-        textViewType.setText(devices.type);
+
+        textViewMAC.setText("MAC-address is: " + devices.macAddress);
+        textRSSI.setText("RSSI: " + devices.RSSI + " dBm");
+        textViewType.setText("Name of Bluetooth-device: " + devices.type);
+        textClass.setText("Class: " + devices.BTclass);
         textViewHashFull.setText("Full anonymization: " + devices.hashFull);
         textViewHashSemi.setText("Semi anonymization: " + devices.hashSemi);
         textViewHashNo.setText("Only SHA-1: " + devices.hashNo);
+
 
         return convertView;
     }

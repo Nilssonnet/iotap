@@ -32,6 +32,7 @@ public class DisplayFragment extends Fragment implements View.OnClickListener{
     private ArrayList<String> time;
     private ArrayList<String> hash;
     private ArrayList<String> device;
+    private ArrayList<Integer> RSSI;
 
     private ArrayList<Display> arrayListDisplay;
     private DisplayAdapter displayAdapter;
@@ -61,6 +62,7 @@ public class DisplayFragment extends Fragment implements View.OnClickListener{
         time = new ArrayList<String>();
         hash = new ArrayList<String>();
         device = new ArrayList<String>();
+        RSSI = new ArrayList<Integer>();
 
         Button displayButton = (Button) view.findViewById(R.id.buttonDisplay);
         displayButton.setOnClickListener(this);
@@ -119,6 +121,7 @@ public class DisplayFragment extends Fragment implements View.OnClickListener{
             time.clear();
             hash.clear();
             device.clear();
+            RSSI.clear();
 
             try {
                 result = new GetAsyncTask().execute().get();
@@ -126,16 +129,19 @@ public class DisplayFragment extends Fragment implements View.OnClickListener{
                 time = new ArrayList<String>(result.size());
                 hash = new ArrayList<String>(result.size());
                 device = new ArrayList<String>(result.size());
+                RSSI = new ArrayList<Integer>(result.size());
                 if(!result.contains("0 results")) {
                     for (int i = 0; i < result.size(); i++) {
                         String[] parts = result.get(i).split(";");
                         time.add(parts[0]);
                         hash.add(parts[1]);
                         device.add(parts[2]);
+                        RSSI.add(Integer.parseInt(parts[3].substring(6)));
                         j++;
                     }
                     for (int i = 0; i < j; i++) {
-                        displayAdapter.add(new Display(time.get(i), hash.get(i), device.get(i)));
+                        displayAdapter.add(new Display(time.get(i), hash.get(i), device.get(i),
+                                RSSI.get(i)));
                     }
                 }
             } catch (InterruptedException e) {

@@ -29,10 +29,12 @@ public class DisplayAdapter extends ArrayAdapter<Display> {
         TextView textViewTime = (TextView)convertView.findViewById(R.id.tvTime);
         TextView textViewHashed = (TextView)convertView.findViewById(R.id.tvHashed);
         TextView textViewDevice = (TextView)convertView.findViewById(R.id.tvDevice);
+        TextView textViewRSSI = (TextView)convertView.findViewById(R.id.tvDisplayRSSI);
 
         textViewTime.setText(display.timeStamp);
         textViewHashed.setText(display.hashedMAC);
         textViewDevice.setText(display.deviceClass);
+        textViewRSSI.setText("RSSI: " + display.RSSI);
 
         return convertView;
     }
