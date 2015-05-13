@@ -34,7 +34,7 @@ public class DisplayAdapter extends ArrayAdapter<Display> {
         textViewTime.setText(display.timeStamp);
         textViewHashed.setText(display.hashedMAC);
         textViewDevice.setText(display.deviceClass);
-        textViewRSSI.setText("RSSI: " + display.RSSI);
+        textViewRSSI.setText("RSSI: " + display.RSSI + " dBm");
 
         return convertView;
     }
