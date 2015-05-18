@@ -3,11 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-    <TextView
-        android:id="@+id/tvMAC"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="MAC" />
+
     <TextView
         android:id="@+id/tvType"
         android:layout_width="wrap_content"
@@ -15,9 +11,44 @@
         android:text="Type" />
 
     <TextView
-        android:id="@+id/tvHash"
+        android:id="@+id/tvMAC"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hash" />
+        android:text="MAC" />
+
+    <TextView
+        android:id="@+id/tvRSSI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RSSI" />
+
+    <TextView
+        android:id="@+id/tvClass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RSSI" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="5pt" />
+
+    <TextView
+        android:id="@+id/tvHashFull"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="HashFull" />
+
+    <TextView
+        android:id="@+id/tvHashSemi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="HashSemi" />
+
+    <TextView
+        android:id="@+id/tvHashNo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="HashNo" />
+
 
 </LinearLayout>
