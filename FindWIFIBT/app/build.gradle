@@ -5,7 +5,7 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "bluetooth.exjobb.com.findwifibt"
+        applicationId "bluetooth.exjobb.com.findbt"
         minSdkVersion 18
         targetSdkVersion 21
         versionCode 1
