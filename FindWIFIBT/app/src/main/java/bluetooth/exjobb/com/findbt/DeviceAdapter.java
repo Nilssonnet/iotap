@@ -1,4 +1,4 @@
-package bluetooth.exjobb.com.findwifibt;
+package bluetooth.exjobb.com.findbt;
 
 import android.content.Context;
 import android.view.LayoutInflater;

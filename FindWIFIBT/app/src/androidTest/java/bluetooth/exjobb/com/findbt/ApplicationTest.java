@@ -1,4 +1,4 @@
-package bluetooth.exjobb.com.findwifibt;
+package bluetooth.exjobb.com.findbt;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

@@ -1,4 +1,4 @@
-package bluetooth.exjobb.com.findwifibt;
+package bluetooth.exjobb.com.findbt;
 
 /**
  * Created by Sebastian Olsson on 15-04-12.

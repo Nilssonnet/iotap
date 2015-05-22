@@ -1,4 +1,4 @@
-package bluetooth.exjobb.com.findwifibt;
+package bluetooth.exjobb.com.findbt;
 
 import android.app.FragmentTransaction;
 import android.os.AsyncTask;
