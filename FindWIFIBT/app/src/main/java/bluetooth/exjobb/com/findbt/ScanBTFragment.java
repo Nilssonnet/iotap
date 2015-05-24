@@ -45,7 +45,7 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
     private DeviceAdapter deviceAdapter;
 
     private String resultHashFull, resultHashSemi, resultHashNo, resultClass;
-    int RSSI;
+    private int RSSI;
 
     private String link = "http://213.65.109.112/insert.php";
 
@@ -112,29 +112,15 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost(link);
             try {
-                ArrayList<NameValuePair> nameValuePairsFull = new ArrayList<NameValuePair>(4);
-                nameValuePairsFull.add(new BasicNameValuePair("selection", "FullAnon"));
-                nameValuePairsFull.add(new BasicNameValuePair("resultHash", resultHashFull));
-                nameValuePairsFull.add(new BasicNameValuePair("resultClass", resultClass));
+                ArrayList<NameValuePair> nameValuePairsFull = new ArrayList<NameValuePair>(6);
+                nameValuePairsFull.add(new BasicNameValuePair("time", HashMethods.currentMinute()));
                 nameValuePairsFull.add(new BasicNameValuePair("RSSI", String.valueOf(RSSI)));
+                nameValuePairsFull.add(new BasicNameValuePair("resultClass", resultClass));
+                nameValuePairsFull.add(new BasicNameValuePair("resultFull", resultHashFull));
+                nameValuePairsFull.add(new BasicNameValuePair("resultSemi", resultHashSemi));
+                nameValuePairsFull.add(new BasicNameValuePair("resultNo", resultHashNo));
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairsFull));
-                HttpResponse responseFull = httpclient.execute(httppost);
-
-                ArrayList<NameValuePair> nameValuePairsSemi = new ArrayList<NameValuePair>(4);
-                nameValuePairsSemi.add(new BasicNameValuePair("selection", "SemiAnon"));
-                nameValuePairsSemi.add(new BasicNameValuePair("resultHash", resultHashSemi));
-                nameValuePairsSemi.add(new BasicNameValuePair("resultClass", resultClass));
-                nameValuePairsSemi.add(new BasicNameValuePair("RSSI", String.valueOf(RSSI)));
-                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairsSemi));
                 HttpResponse response = httpclient.execute(httppost);
-
-                ArrayList<NameValuePair> nameValuePairsNo = new ArrayList<NameValuePair>(4);
-                nameValuePairsNo.add(new BasicNameValuePair("selection", "NoAnon"));
-                nameValuePairsNo.add(new BasicNameValuePair("resultHash", resultHashNo));
-                nameValuePairsNo.add(new BasicNameValuePair("resultClass", resultClass));
-                nameValuePairsNo.add(new BasicNameValuePair("RSSI", String.valueOf(RSSI)));
-                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairsNo));
-                HttpResponse responseNo = httpclient.execute(httppost);
             }
             catch(Exception e)
             {
