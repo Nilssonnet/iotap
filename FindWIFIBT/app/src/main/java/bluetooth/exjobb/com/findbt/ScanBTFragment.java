@@ -64,7 +64,7 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
         View view = inflater.inflate(R.layout.fragment_scan_bt, container, false);
 
         arrayListDevices = new ArrayList<Devices>();
-        deviceAdapter=new DeviceAdapter(getActivity(),arrayListDevices);
+        deviceAdapter = new DeviceAdapter(getActivity(),arrayListDevices);
 
         listView = (ListView) view.findViewById(R.id.listViewDevices);
         listView.setAdapter(deviceAdapter);
@@ -102,6 +102,7 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
         Toast.makeText(getActivity(), "Starting search for BT devices",
                 Toast.LENGTH_SHORT).show();
         deviceAdapter.clear();
+        arrayListDevices = new ArrayList<Devices>();
         mBlueAdapter.startDiscovery();
     }
 
@@ -160,18 +161,39 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 BluetoothClass btClass=intent.getParcelableExtra(BluetoothDevice.EXTRA_CLASS);
-                // Add the name and address to an array adapter to show in a ListView
-                resultClass = BluetoothDevices.DeviceClass(btClass.getDeviceClass());
-                RSSI = intent.getShortExtra(device.EXTRA_RSSI, Short.MIN_VALUE);
-                resultHashFull = HashMethods.hashMethodSHA_1
-                        (HashMethods.currentMinute() + device.getAddress());
-                resultHashSemi = HashMethods.hashMethodSHA_1
-                        (HashMethods.currentHour() + device.getAddress());
-                resultHashNo = HashMethods.hashMethodSHA_1
-                        (device.getAddress());
-                new PostAsyncTask().execute((Void) null);
-                deviceAdapter.add(new Devices(device.getName(), device.getAddress(),
-                        resultHashFull, resultHashSemi, resultHashNo, RSSI, resultClass));
+                boolean found = true;
+                int i = 0;
+                do{
+                    if (arrayListDevices.size() == 0){
+                        found = false;
+                    }
+                    else {
+                        if (device.getAddress().equals(arrayListDevices.get(i).getMacAddress())){
+                            found = true;
+                            break;
+                        } else{
+                            found = false;
+                        }
+                    }
+                    i++;
+                }while (i < arrayListDevices.size());
+
+                if(!found){
+                    // Add the name and address to an array adapter to show in a ListView
+                    resultClass = BluetoothDevices.DeviceClass(btClass.getDeviceClass());
+                    RSSI = intent.getShortExtra(device.EXTRA_RSSI, Short.MIN_VALUE);
+                    resultHashFull = HashMethods.hashMethodSHA_1
+                            (HashMethods.currentMinute() + device.getAddress());
+                    resultHashSemi = HashMethods.hashMethodSHA_1
+                            (HashMethods.currentHour() + device.getAddress());
+                    resultHashNo = HashMethods.hashMethodSHA_1
+                            (device.getAddress());
+                    new PostAsyncTask().execute((Void) null);
+                    deviceAdapter.add(new Devices(device.getName(), device.getAddress(),
+                            resultHashFull, resultHashSemi, resultHashNo, RSSI, resultClass));
+                    arrayListDevices.add(new Devices(device.getName(), device.getAddress(),
+                            resultHashFull, resultHashSemi, resultHashNo, RSSI, resultClass));
+                }
             }
         }
     };

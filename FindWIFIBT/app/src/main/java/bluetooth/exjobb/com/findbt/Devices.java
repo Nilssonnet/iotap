@@ -22,4 +22,8 @@ public class Devices {
         this.RSSI = RSSI;
         this.BTclass = BTclass;
     }
+
+    public String getMacAddress(){
+        return macAddress;
+    }
 }
