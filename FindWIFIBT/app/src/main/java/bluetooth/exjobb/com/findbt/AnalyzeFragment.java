@@ -52,8 +52,8 @@ public class AnalyzeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_analyze, container, false);
         TextView textView = (TextView) view.findViewById(R.id.textViewAnalyze);
-        textView.setText("The device with the hashed MAC-address " + hash.substring(8) +
-                "\nthat is a Bluetooth device of class " + device.substring(7) +
+        textView.setText("The device with the hashed MAC-address " + hash +
+                "\nthat is a Bluetooth device of class " + device +
                 " has been at this location at these times:");
         ListView listView = (ListView) view.findViewById(R.id.listViewAnalyze);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>

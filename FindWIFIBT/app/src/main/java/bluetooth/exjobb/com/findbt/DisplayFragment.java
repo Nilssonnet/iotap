@@ -26,13 +26,17 @@ import java.util.concurrent.ExecutionException;
  */
 public class DisplayFragment extends Fragment implements View.OnClickListener{
 
-    private String link;
+    private String link = "http://213.65.109.112/get.php";
     private String radioButtonResult = "";
 
     private ArrayList<String> time;
-    private ArrayList<String> hash;
-    private ArrayList<String> device;
     private ArrayList<Integer> RSSI;
+    private ArrayList<String> deviceClass;
+    private ArrayList<String> hashFull;
+    private ArrayList<String> hashSemi;
+    private ArrayList<String> hashNo;
+
+    private ArrayList<String> hash;
 
     private ArrayList<Display> arrayListDisplay;
     private DisplayAdapter displayAdapter;
@@ -60,9 +64,13 @@ public class DisplayFragment extends Fragment implements View.OnClickListener{
         devicesList.setAdapter(displayAdapter);
 
         time = new ArrayList<String>();
-        hash = new ArrayList<String>();
-        device = new ArrayList<String>();
         RSSI = new ArrayList<Integer>();
+        deviceClass = new ArrayList<String>();
+        hashFull = new ArrayList<String>();
+        hashSemi = new ArrayList<String>();
+        hashNo = new ArrayList<String>();
+
+        hash = new ArrayList<String>();
 
         Button displayButton = (Button) view.findViewById(R.id.buttonDisplay);
         displayButton.setOnClickListener(this);
@@ -74,15 +82,12 @@ public class DisplayFragment extends Fragment implements View.OnClickListener{
                 switch (checkedId) {
                     case R.id.radioButtonFullAnonDisplay:
                         radioButtonResult = "FullAnon";
-                        link = "http://213.65.109.112/getFullAnon.php";
                         break;
                     case R.id.radioButtonSemiAnonDisplay:
                         radioButtonResult = "SemiAnon";
-                        link = "http://213.65.109.112/getSemiAnon.php";
                         break;
                     case R.id.radioButtonNoAnonDisplay:
                         radioButtonResult = "NoAnon";
-                        link = "http://213.65.109.112/getNoAnon.php";
                         break;
                 }
             }
@@ -91,8 +96,17 @@ public class DisplayFragment extends Fragment implements View.OnClickListener{
         devicesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AnalyzeFragment fragment = AnalyzeFragment.newInstance
-                        (hash.get(position), device.get(position), getTimeFromPosition(position));
+                int split = 0;
+                if(radioButtonResult.equals("FullAnon")){
+                    split = 20;
+                } else if(radioButtonResult.equals("SemiAnon")){
+                    split = 20;
+                } else if(radioButtonResult.equals("NoAnon")){
+                    split = 12;
+                }
+                AnalyzeFragment fragment = AnalyzeFragment.newInstance(hash.get(position).
+                        substring(split), deviceClass.get(position).substring(7),
+                        getTimeFromPosition(position));
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.container_main, fragment);
                 transaction.addToBackStack("Analyze");
@@ -118,30 +132,39 @@ public class DisplayFragment extends Fragment implements View.OnClickListener{
             ArrayList<String> result;
             displayAdapter.clear();
             int j = 0;
-            time.clear();
-            hash.clear();
-            device.clear();
-            RSSI.clear();
 
             try {
                 result = new GetAsyncTask().execute().get();
+                time = new ArrayList<String>(result.size()-1);
+                RSSI = new ArrayList<Integer>(result.size()-1);
+                deviceClass = new ArrayList<String>(result.size()-1);
+                hashFull = new ArrayList<String>(result.size()-1);
+                hashSemi = new ArrayList<String>(result.size()-1);
+                hashNo = new ArrayList<String>(result.size()-1);
 
-                time = new ArrayList<String>(result.size());
-                hash = new ArrayList<String>(result.size());
-                device = new ArrayList<String>(result.size());
-                RSSI = new ArrayList<Integer>(result.size());
                 if(!result.contains("0 results")) {
-                    for (int i = 0; i < result.size(); i++) {
+                    for (int i = 0; i < result.size()-1; i++) {
                         String[] parts = result.get(i).split(";");
                         time.add(parts[0]);
-                        hash.add(parts[1]);
-                        device.add(parts[2]);
-                        RSSI.add(Integer.parseInt(parts[3].substring(6)));
+                        RSSI.add(Integer.parseInt(parts[1].substring(6)));
+                        deviceClass.add(parts[2]);
+                        hashFull.add(parts[3]);
+                        hashSemi.add(parts[4]);
+                        hashNo.add(parts[5]);
                         j++;
                     }
+
+                    if(radioButtonResult.equals("FullAnon")){
+                        hash = new ArrayList<String>(hashFull);
+                    } else if(radioButtonResult.equals("SemiAnon")){
+                        hash = new ArrayList<String>(hashSemi);
+                    } else if(radioButtonResult.equals("NoAnon")){
+                        hash = new ArrayList<String>(hashNo);
+                    }
+
                     for (int i = 0; i < j; i++) {
-                        displayAdapter.add(new Display(time.get(i), hash.get(i), device.get(i),
-                                RSSI.get(i)));
+                        displayAdapter.add(new Display(time.get(i), hash.get(i), deviceClass.get(i),
+                               RSSI.get(i)));
                     }
                 }
             } catch (InterruptedException e) {
