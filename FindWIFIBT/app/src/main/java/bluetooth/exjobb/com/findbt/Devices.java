@@ -1,7 +1,8 @@
 package bluetooth.exjobb.com.findbt;
 
 /**
- * Created by Sebastian Olsson on 15-04-12.
+ * Stores the found Bluetooth device as an object.
+ * Created by Mattias Nilsson & Sebastian Olsson
  */
 public class Devices {
     public String macAddress;

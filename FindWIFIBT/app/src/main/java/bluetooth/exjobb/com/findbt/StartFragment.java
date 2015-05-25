@@ -1,6 +1,5 @@
 package bluetooth.exjobb.com.findbt;
 
-
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,11 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-
 /**
- * A simple {@link Fragment} subclass.
- *
- * Created by Mattias Nilsson on 15-04-23.
+ * Simple fragment that lets the user select whether to search for Bluetooth devices or show
+ * devices from the database by launching the fragment for that task.
+ * Created by Mattias Nilsson & Sebastian Olsson
  */
 public class StartFragment extends Fragment implements View.OnClickListener{
     View view;
@@ -21,11 +19,13 @@ public class StartFragment extends Fragment implements View.OnClickListener{
         // Required empty public constructor
     }
 
+    /*
+     * Sets up the fragment.
+     */
     public static StartFragment newInstance() {
         StartFragment fragment = new StartFragment();
         return fragment;
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,6 +52,4 @@ public class StartFragment extends Fragment implements View.OnClickListener{
                 break;
         }
     }
-
-
 }

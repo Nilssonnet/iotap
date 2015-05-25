@@ -1,6 +1,5 @@
 package bluetooth.exjobb.com.findbt;
 
-
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,9 +11,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-
 /**
- * A simple {@link Fragment} subclass.
+ * Contains logic for showing when a specific device have been scanned.
+ * Created by Mattias Nilsson & Sebastian Olsson
  */
 public class AnalyzeFragment extends Fragment {
 
@@ -26,6 +25,9 @@ public class AnalyzeFragment extends Fragment {
         // Required empty public constructor
     }
 
+    /* Sets up the fragment. When the fragment is launched from DisplayFragment, arguments
+     * are sent from that fragment to this fragment.
+     */
     public static AnalyzeFragment newInstance(String hash, String device, ArrayList<String> time){
         AnalyzeFragment fragment = new AnalyzeFragment();
         Bundle args = new Bundle();

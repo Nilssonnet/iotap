@@ -1,6 +1,5 @@
 package bluetooth.exjobb.com.findbt;
 
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
@@ -30,29 +29,27 @@ import org.apache.http.message.BasicNameValuePair;
 import java.util.ArrayList;
 
 /**
- * A simple {@link Fragment} subclass.
- *
- * Created by Sebastian Olsson on 15-04-12.
- * Modified by Mattias Nilsson
+ * Fragment that scans Bluetooth devices, displays them in a list and sends the data to database.
+ * Created by Mattias Nilsson & Sebastian Olsson
  */
 public class ScanBTFragment extends Fragment implements View.OnClickListener{
 
     private final static int REQUEST_ENABLE_BT = 1;
     private BluetoothAdapter mBlueAdapter;
     private ListView listView;
-
     private ArrayList<Devices> arrayListDevices;
     private DeviceAdapter deviceAdapter;
-
     private String resultHashFull, resultHashSemi, resultHashNo, resultClass;
     private int RSSI;
-
-    private String link = "http://213.65.109.112/insert.php";
+    private String link = "http://213.65.109.112/insert.php"; //URL to database.
 
     public ScanBTFragment() {
         // Required empty public constructor
     }
 
+    /*
+     * Sets up the fragment.
+     */
     public static ScanBTFragment newInstance() {
         ScanBTFragment fragment = new ScanBTFragment();
         return fragment;
@@ -65,10 +62,8 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
 
         arrayListDevices = new ArrayList<Devices>();
         deviceAdapter = new DeviceAdapter(getActivity(),arrayListDevices);
-
         listView = (ListView) view.findViewById(R.id.listViewDevices);
         listView.setAdapter(deviceAdapter);
-
         mBlueAdapter = BluetoothAdapter.getDefaultAdapter();
         if(mBlueAdapter==null){
             Toast.makeText(getActivity(), "This device do not have Bluetooth",
@@ -98,6 +93,9 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
         getActivity().unregisterReceiver(mReceiver);
     }
 
+    /*
+     * Starts the scanning of Bluetooth devices.
+     */
     public void scan(){
         Toast.makeText(getActivity(), "Starting search for BT devices",
                 Toast.LENGTH_SHORT).show();
@@ -106,6 +104,9 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
         mBlueAdapter.startDiscovery();
     }
 
+    /*
+     * Sends Bluetooth devices to database.
+     */
     class PostAsyncTask extends AsyncTask<Void, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Void... params) {
@@ -138,7 +139,9 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
         getActivity().registerReceiver(mReceiver, filter); // Unregister in onDestroy
     }
 
-    // Create a BroadcastReceiver for ACTION_FOUND
+    /*
+     * Scans Bluetooth devices, adds the found device to list and database.
+     */
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -149,6 +152,9 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
                 BluetoothClass btClass=intent.getParcelableExtra(BluetoothDevice.EXTRA_CLASS);
                 boolean found = true;
                 int i = 0;
+                /*
+                 * Checks that found Bluetooth device not have been found earlier on same scan.
+                 */
                 do{
                     if (arrayListDevices.size() == 0){
                         found = false;
@@ -164,8 +170,10 @@ public class ScanBTFragment extends Fragment implements View.OnClickListener{
                     i++;
                 }while (i < arrayListDevices.size());
 
+                /*
+                 * Hashes found device, shows the device in list and sends it to database.
+                 */
                 if(!found){
-                    // Add the name and address to an array adapter to show in a ListView
                     resultClass = BluetoothDevices.DeviceClass(btClass.getDeviceClass());
                     RSSI = intent.getShortExtra(device.EXTRA_RSSI, Short.MIN_VALUE);
                     resultHashFull = HashMethods.hashMethodSHA_1

@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -20,33 +21,32 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-
 /**
- * A simple {@link Fragment} subclass.
+ * Fragment that fetches Bluetooth devices from database and displays them in a list.
+ * Created by Mattias Nilsson & Sebastian Olsson
  */
 public class DisplayFragment extends Fragment implements View.OnClickListener{
 
-    private String link = "http://213.65.109.112/get.php";
+    private String link = "http://213.65.109.112/get.php";  //URL to database.
     private String radioButtonResult = "";
-
     private ArrayList<String> time;
     private ArrayList<Integer> RSSI;
     private ArrayList<String> deviceClass;
     private ArrayList<String> hashFull;
     private ArrayList<String> hashSemi;
     private ArrayList<String> hashNo;
-
     private ArrayList<String> hash;
-
     private ArrayList<Display> arrayListDisplay;
     private DisplayAdapter displayAdapter;
-
     private ListView devicesList;
 
     public DisplayFragment() {
         // Required empty public constructor
     }
 
+    /*
+     * Sets up the fragment.
+     */
     public static DisplayFragment newInstance() {
         DisplayFragment fragment = new DisplayFragment();
         return fragment;
@@ -62,19 +62,19 @@ public class DisplayFragment extends Fragment implements View.OnClickListener{
         displayAdapter=new DisplayAdapter(getActivity(),arrayListDisplay);
         devicesList = (ListView) view.findViewById(R.id.listViewDisplay);
         devicesList.setAdapter(displayAdapter);
-
         time = new ArrayList<String>();
         RSSI = new ArrayList<Integer>();
         deviceClass = new ArrayList<String>();
         hashFull = new ArrayList<String>();
         hashSemi = new ArrayList<String>();
         hashNo = new ArrayList<String>();
-
         hash = new ArrayList<String>();
-
         Button displayButton = (Button) view.findViewById(R.id.buttonDisplay);
         displayButton.setOnClickListener(this);
 
+        /*
+         * Selects which anonymization-level to show in list.
+         */
         RadioGroup radioGroupDisplay = (RadioGroup) view.findViewById(R.id.radioGroupDisplay);
         radioGroupDisplay.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -93,6 +93,9 @@ public class DisplayFragment extends Fragment implements View.OnClickListener{
             }
         });
 
+        /*
+         * Sends the device to AnalyzeFragment.
+         */
         devicesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -124,6 +127,9 @@ public class DisplayFragment extends Fragment implements View.OnClickListener{
         }
     }
 
+    /*
+     * Logic for splitting the stream from database and display devices in list.
+     */
     private void display(){
         if (radioButtonResult.equals("")){
             Toast.makeText(getActivity(), "Select a hash method", Toast.LENGTH_SHORT).show();
@@ -132,7 +138,6 @@ public class DisplayFragment extends Fragment implements View.OnClickListener{
             ArrayList<String> result;
             displayAdapter.clear();
             int j = 0;
-
             try {
                 result = new GetAsyncTask().execute().get();
                 time = new ArrayList<String>(result.size()-1);
@@ -175,6 +180,9 @@ public class DisplayFragment extends Fragment implements View.OnClickListener{
         }
     }
 
+    /*
+     * Gets all the time that selected device have been scanned.
+     */
     private ArrayList<String> getTimeFromPosition(int pos){
         String hashdev = hash.get(pos);
         ArrayList<String> res = new ArrayList<String>();
@@ -186,6 +194,9 @@ public class DisplayFragment extends Fragment implements View.OnClickListener{
         return res;
     }
 
+    /*
+     * Gets data from database.
+     */
     class GetAsyncTask extends AsyncTask<String, String, ArrayList<String>> {
         @Override
         protected ArrayList<String> doInBackground(String... arg0) {

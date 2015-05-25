@@ -1,7 +1,8 @@
 package bluetooth.exjobb.com.findbt;
 
 /**
- * Created by Mattias on 2015-04-30.
+ * Stores data about a Bluetooth device (data from database).
+ * Created by Mattias Nilsson & Sebastian Olsson
  */
 public class Display {
     public String timeStamp;

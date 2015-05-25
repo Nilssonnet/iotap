@@ -10,7 +10,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
- * Created by Sebastian olsson on 15-04-12.
+ * Modified adapter to show found devices on the scan.
+ * Created by Mattias Nilsson & Sebastian Olsson
  */
 public class DeviceAdapter extends ArrayAdapter<Devices> {
     public DeviceAdapter(Context context, ArrayList<Devices>devices) {
@@ -21,7 +22,8 @@ public class DeviceAdapter extends ArrayAdapter<Devices> {
         Devices devices = getItem(position);
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.devices, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.devices,
+                    parent, false);
         }
 
         TextView textViewMAC = (TextView)convertView.findViewById(R.id.tvMAC);
@@ -32,7 +34,6 @@ public class DeviceAdapter extends ArrayAdapter<Devices> {
         TextView textViewHashSemi = (TextView)convertView.findViewById(R.id.tvHashSemi);
         TextView textViewHashNo = (TextView)convertView.findViewById(R.id.tvHashNo);
 
-
         textViewMAC.setText("MAC-address is: " + devices.macAddress);
         textRSSI.setText("RSSI: " + devices.RSSI + " dBm");
         textViewType.setText("Name of Bluetooth-device: " + devices.type);
@@ -40,7 +41,6 @@ public class DeviceAdapter extends ArrayAdapter<Devices> {
         textViewHashFull.setText("Full anonymization: " + devices.hashFull);
         textViewHashSemi.setText("Semi anonymization: " + devices.hashSemi);
         textViewHashNo.setText("Only SHA-1: " + devices.hashNo);
-
 
         return convertView;
     }

@@ -1,6 +1,5 @@
 package bluetooth.exjobb.com.findbt;
 
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +10,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
- * Created by Mattias on 2015-04-30.
+ * Modified adapter to show devices from database.
+ * Created by Mattias Nilsson & Sebastian Olsson
  */
 public class DisplayAdapter extends ArrayAdapter<Display> {
     public DisplayAdapter(Context context, ArrayList<Display>display) {

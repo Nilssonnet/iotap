@@ -1,7 +1,8 @@
 package bluetooth.exjobb.com.findbt;
 
 /**
- * Created by Mattias on 2015-04-30.
+ * Returns the Bluetooth class of found device.
+ * Created by Mattias Nilsson & Sebastian Olsson
  */
 public class BluetoothDevices {
 
@@ -123,8 +124,6 @@ public class BluetoothDevices {
                 return "UNCATEGORIZED";
             default:
                 return null;
-
         }
     }
-
 }

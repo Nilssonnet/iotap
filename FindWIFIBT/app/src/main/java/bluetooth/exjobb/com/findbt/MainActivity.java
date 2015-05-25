@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.os.Bundle;
 
 /**
- * Created by Sebastian Olsson on 15-04-12.
- * Modified by Mattias Nilsson
+ * Launches the fragment StartFragment once the application starts.
+ * Created by Mattias Nilsson & Sebastian Olsson
  */
 
 public class MainActivity extends Activity {

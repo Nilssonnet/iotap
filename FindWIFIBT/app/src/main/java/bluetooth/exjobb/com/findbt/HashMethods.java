@@ -7,10 +7,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by Sebastian Olsson on 15-04-12.
- * Modified by Mattias Nilsson
+ * Contains methods to hash a MAC-address and returns the current time.
+ * Created by Mattias Nilsson & Sebastian Olsson
  */
 public class HashMethods {
+    /*
+     * Hashes a string to SHA-1.
+     */
     public static String hashMethodSHA_1 (String mac) {
         MessageDigest md = null;
         try {
@@ -26,16 +29,21 @@ public class HashMethods {
         return sha_1;
     }
 
+    /*
+     * Return current time (hour of day) as well as the date.
+     */
     public static String currentHour(){
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHH");
         Date curentTime = new Date();
         return dateFormat.format(curentTime);
     }
 
+    /*
+    * Return current time (hour and minute) as well as the date.
+    */
     public static String currentMinute(){
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
         Date curentTime = new Date();
         return dateFormat.format(curentTime);
     }
-
 }
